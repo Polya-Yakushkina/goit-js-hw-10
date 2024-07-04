@@ -6,13 +6,14 @@ import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 
 
-const picker = document.getElementById('datatime-picker');
+const picker = document.getElementById('datetime-picker');
 const startButton = document.querySelector('[data-start]');
-const days = document.querySelector('[data-days]');
-const hours = document.querySelector('[data-hours]');
-const minutes = document.querySelector('[data-minutes]');
-const seconds = document.querySelector('[data-seconds]');
+const daysElem = document.querySelector('[data-days]');
+const hoursElem = document.querySelector('[data-hours]');
+const minutesElem = document.querySelector('[data-minutes]');
+const secondsElem = document.querySelector('[data-seconds]');
 let userSelectedDate;
+let timerInterval;
 
 const options = {
   enableTime: true,
@@ -20,7 +21,6 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
     onClose(selectedDates) {
-        userSelectedDate = selectedDates[0];
     console.log(selectedDates[0]);
   },
 };
@@ -69,15 +69,15 @@ function convertMs(ms) {
 
 console.log(convertMs(2000)); // {days: 0, hours: 0, minutes: 0, seconds: 2}
 console.log(convertMs(140000)); // {days: 0, hours: 0, minutes: 2, seconds: 20}
-console.log(convertMs(24140000)); // {days: 0, hours: 6 minutes: 42, seconds: 20}
+console.log(convertMs(24140000)); // {days: 0, hours: 6, minutes: 42, seconds: 20}
 
 
 function updateTimer(ms) {
     const { days, hours, minutes, seconds } = convertMs(ms);
-    const elements = [days, hours, minutes, seconds];
-    elements.forEach(element => {
-        element.textContent = addLeadingZero(element);
-    });
+    daysElem.textContent = addLeadingZero(days);
+    hoursElem.textContent = addLeadingZero(hours);
+    minutesElem.textContent = addLeadingZero(minutes);
+    secondsElem.textContent = addLeadingZero(seconds);
 }
 
 function resetTimer() {
@@ -85,14 +85,15 @@ function resetTimer() {
 }
 
 function startTimer(totalMS) {
-    setInterval(function () {
+    timerInterval = setInterval(function () {
         totalMS -= 1000;
 
         if (totalMS <= 0) {
-            clearInterval(this);
-            startButton.dіsabled = false;
+            clearInterval(timerInterval);
+            startButton.disabled = false;
             picker.disabled = false;
             resetTimer();
+            return;
         }
         updateTimer(totalMS);
     }, 1000);
