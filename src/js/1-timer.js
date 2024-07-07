@@ -28,10 +28,8 @@ flatpickr(picker, options);
 
 startButton.addEventListener('click', function () {
     const selectedDate = picker._flatpickr.selectedDates[0];
-    const currentDate = new Date();
-    const msDifference = selectedDate.getTime() - currentDate.getTime();
 
-    if (selectedDate <= currentDate) {
+    if (selectedDate <= new Date()) {
         iziToast.error({
             title: 'Error',
             message: 'Please choose a date in the future',
@@ -41,7 +39,7 @@ startButton.addEventListener('click', function () {
     }
     startButton.disabled = true;
     picker.disabled = true;
-    startTimer(msDifference);
+    startTimer(selectedDate.getTime() - new Date().getTime());
 });
 
 function addLeadingZero(value) {
@@ -98,8 +96,3 @@ function startTimer(totalMS) {
         updateTimer(totalMS);
     }, 1000);
 }
-
-
-
-
-
